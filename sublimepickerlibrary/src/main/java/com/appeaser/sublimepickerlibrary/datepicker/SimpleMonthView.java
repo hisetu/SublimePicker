@@ -306,7 +306,7 @@ class SimpleMonthView extends View {
         mMonthPaint.setAntiAlias(true);
         mMonthPaint.setTextSize(monthTextSize);
         mMonthPaint.setTypeface(Typeface.create(monthTypeface, 0));
-        mMonthPaint.setTextAlign(Paint.Align.CENTER);
+        mMonthPaint.setTextAlign(Paint.Align.LEFT);
         mMonthPaint.setStyle(Paint.Style.FILL);
 
         mDaySelectorPaint.setAntiAlias(true);
@@ -450,13 +450,12 @@ class SimpleMonthView extends View {
     }
 
     private void drawMonth(Canvas canvas) {
-        final float x = mPaddedWidth / 2f;
-
         // Vertically centered within the month header height.
         final float lineHeight = mMonthPaint.ascent() + mMonthPaint.descent();
         final float y = (mMonthHeight - lineHeight) / 2f;
 
-        canvas.drawText(getTitle().toString(), x, y, mMonthPaint);
+        int paddingStart = SUtils.isApi_17_OrHigher() ? getPaddingStart() : getPaddingLeft();
+        canvas.drawText(getTitle().toString(), paddingStart, y + 40, mMonthPaint);
     }
 
     /**
