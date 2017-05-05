@@ -85,6 +85,7 @@ class SimpleMonthView extends View {
     private MonthViewTouchHelper mTouchHelper;
 
     private SimpleDateFormat mTitleFormatter;
+    private SimpleDateFormat mTitleWithoutYearFormatter;
     private NumberFormat mDayFormatter;
 
     // Desired dimensions.
@@ -215,6 +216,9 @@ class SimpleMonthView extends View {
         }
 
         mTitleFormatter = new SimpleDateFormat(titleFormat, locale);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            mTitleWithoutYearFormatter = new SimpleDateFormat(DateFormat.getBestDateTimePattern(locale, "MMMM"), locale);
+        }
         mDayFormatter = NumberFormat.getIntegerInstance(locale);
 
         initPaints(res);
@@ -276,9 +280,15 @@ class SimpleMonthView extends View {
 
     public CharSequence getTitle() {
         if (mTitle == null) {
-            mTitle = mTitleFormatter.format(mCalendar.getTime());
+            mTitle = isThisYear() ? mTitleWithoutYearFormatter.format(mCalendar.getTime())
+                    : mTitleFormatter.format(mCalendar.getTime());
         }
         return mTitle;
+    }
+
+    private boolean isThisYear() {
+        return Calendar.getInstance().get(Calendar.YEAR)
+                == mCalendar.get(Calendar.YEAR);
     }
 
     /**
