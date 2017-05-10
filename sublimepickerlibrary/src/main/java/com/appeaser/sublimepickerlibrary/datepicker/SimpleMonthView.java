@@ -455,7 +455,7 @@ class SimpleMonthView extends View {
         final float y = (mMonthHeight - lineHeight) / 2f;
 
         int paddingStart = SUtils.isApi_17_OrHigher() ? getPaddingStart() : getPaddingLeft();
-        canvas.drawText(getTitle().toString(), paddingStart, y, mMonthPaint);
+        canvas.drawText(getTitle().toString(), paddingStart / 2, y, mMonthPaint);
     }
 
     /**
