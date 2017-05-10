@@ -191,11 +191,9 @@ class DayPickerView extends ViewGroup {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         final int width = right - left;
         final int height = bottom - top;
-        final int dayOfWeekHeight = mDayOfWeekView.getMeasuredHeight();
 
         mDayOfWeekView.layout(0, 0, width, 140);
-
-        mViewPager.layout(0, dayOfWeekHeight, width, height);
+        mViewPager.layout(0, mDayOfWeekView.getHeight(), width, height);
     }
 
     public void setDayOfWeekTextAppearance(int resId) {
