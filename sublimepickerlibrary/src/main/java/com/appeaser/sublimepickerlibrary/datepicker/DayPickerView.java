@@ -25,6 +25,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 
@@ -60,6 +61,7 @@ class DayPickerView extends ViewGroup {
     private ProxyDaySelectionEventListener mProxyDaySelectionEventListener;
     private DayOfWeekView mDayOfWeekView;
     private int mDayOfWeekHeight;
+    private View mSeparateView;
 
     public DayPickerView(Context context) {
         this(context, null);
@@ -96,7 +98,6 @@ class DayPickerView extends ViewGroup {
 
         final ColorStateList daySelectorColor = a.getColorStateList(
                 R.styleable.DayPickerView_spDaySelectorColor);
-
         a.recycle();
 
         if (Config.DEBUG) {
@@ -129,6 +130,8 @@ class DayPickerView extends ViewGroup {
 
         mDayOfWeekView = (DayOfWeekView) findViewById(R.id.day_of_week);
         mDayOfWeekView.setTextAppearance(dayOfWeekTextAppearanceResId);
+
+        mSeparateView = findViewById(R.id.line);
 
         mViewPager = (DayPickerViewPager) findViewById(viewPagerIdToUse);
         mViewPager.setAdapter(mAdapter);
@@ -174,16 +177,17 @@ class DayPickerView extends ViewGroup {
         final ViewPager viewPager = mViewPager;
         measureChild(viewPager, widthMeasureSpec, heightMeasureSpec);
 
+        mDayOfWeekView.measure(widthMeasureSpec, heightMeasureSpec);
+        mDayOfWeekHeight = mDayOfWeekView.getMeasuredHeight() + mDayOfWeekView.getPaddingTop()
+                + mDayOfWeekView.getPaddingBottom();
+
+        mSeparateView.measure(widthMeasureSpec, heightMeasureSpec);
+
         final int measuredWidthAndState = viewPager.getMeasuredWidthAndState();
         final int measuredHeightAndState = viewPager.getMeasuredHeightAndState();
 
         setMeasuredDimension(measuredWidthAndState
                 , measuredHeightAndState + mDayOfWeekHeight);
-
-        mDayOfWeekView.measure(widthMeasureSpec, heightMeasureSpec);
-
-        mDayOfWeekHeight = mDayOfWeekView.getMeasuredHeight() + mDayOfWeekView.getPaddingTop()
-                + mDayOfWeekView.getPaddingBottom();
     }
 
     @Override
@@ -199,7 +203,8 @@ class DayPickerView extends ViewGroup {
         final int height = bottom - top;
 
         mDayOfWeekView.layout(0, 0, width, mDayOfWeekHeight);
-        mViewPager.layout(0, mDayOfWeekView.getHeight(), width, height);
+        mSeparateView.layout(0, mDayOfWeekHeight, width, mDayOfWeekHeight + 1);
+        mViewPager.layout(0, mDayOfWeekHeight + 1, width, height);
     }
 
     public void setDayOfWeekTextAppearance(int resId) {
