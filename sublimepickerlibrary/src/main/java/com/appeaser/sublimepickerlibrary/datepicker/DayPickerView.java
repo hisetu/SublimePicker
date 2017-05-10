@@ -59,6 +59,7 @@ class DayPickerView extends ViewGroup {
 
     private ProxyDaySelectionEventListener mProxyDaySelectionEventListener;
     private DayOfWeekView mDayOfWeekView;
+    private int mDayOfWeekHeight;
 
     public DayPickerView(Context context) {
         this(context, null);
@@ -175,9 +176,14 @@ class DayPickerView extends ViewGroup {
 
         final int measuredWidthAndState = viewPager.getMeasuredWidthAndState();
         final int measuredHeightAndState = viewPager.getMeasuredHeightAndState();
-        setMeasuredDimension(measuredWidthAndState, measuredHeightAndState);
+
+        setMeasuredDimension(measuredWidthAndState
+                , measuredHeightAndState + mDayOfWeekHeight);
 
         mDayOfWeekView.measure(widthMeasureSpec, heightMeasureSpec);
+
+        mDayOfWeekHeight = mDayOfWeekView.getMeasuredHeight() + mDayOfWeekView.getPaddingTop()
+                + mDayOfWeekView.getPaddingBottom();
     }
 
     @Override
@@ -192,7 +198,7 @@ class DayPickerView extends ViewGroup {
         final int width = right - left;
         final int height = bottom - top;
 
-        mDayOfWeekView.layout(0, 0, width, 140);
+        mDayOfWeekView.layout(0, 0, width, mDayOfWeekHeight);
         mViewPager.layout(0, mDayOfWeekView.getHeight(), width, height);
     }
 

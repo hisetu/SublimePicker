@@ -114,7 +114,7 @@
     <dimen name="sp_date_picker_day_selector_radius">20dp</dimen>
     <dimen name="sp_date_picker_day_width">44dp</dimen>
     <dimen name="sp_date_picker_day_height">40dp</dimen>
-    <dimen name="sp_date_picker_day_of_week_height">14dp</dimen>
+    <dimen name="sp_date_picker_day_of_week_height">36dp</dimen>
     <dimen name="sp_date_picker_month_height">56dp</dimen>
 
     <dimen name="sp_month_scroll_threshold">30dp</dimen>
