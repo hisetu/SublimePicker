@@ -137,7 +137,7 @@ class DayPickerView extends ViewGroup {
         mViewPager.setAdapter(mAdapter);
 
         // Proxy selection callbacks to our own listener.
-        mAdapter.setDaySelectionEventListener(new DayPickerPagerAdapter.DaySelectionEventListener() {
+        mAdapter.setDaySelectionEventListener(new DaySelectionEventListener<DayPickerPagerAdapter>() {
             @Override
             public void onDaySelected(DayPickerPagerAdapter adapter, Calendar day) {
                 if (mProxyDaySelectionEventListener != null) {
