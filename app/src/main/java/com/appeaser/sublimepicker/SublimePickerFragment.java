@@ -16,12 +16,6 @@
 
 package com.appeaser.sublimepicker;
 
-import com.appeaser.sublimepickerlibrary.SublimePicker;
-import com.appeaser.sublimepickerlibrary.datepicker.SelectedDate;
-import com.appeaser.sublimepickerlibrary.helpers.SublimeListenerAdapter;
-import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
-import com.appeaser.sublimepickerlibrary.recurrencepicker.SublimeRecurrencePicker;
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -29,7 +23,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.appeaser.sublimepickerlibrary.SublimePicker;
+import com.appeaser.sublimepickerlibrary.datepicker.SelectedDate;
+import com.appeaser.sublimepickerlibrary.helpers.SublimeListenerAdapter;
+import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
+import com.appeaser.sublimepickerlibrary.recurrencepicker.SublimeRecurrencePicker;
+
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -47,7 +48,7 @@ public class SublimePickerFragment extends DialogFragment {
     SublimeListenerAdapter mListener = new SublimeListenerAdapter() {
         @Override
         public void onCancelled() {
-            if (mCallback!= null) {
+            if (mCallback != null) {
                 mCallback.onCancelled();
             }
 
@@ -110,6 +111,11 @@ public class SublimePickerFragment extends DialogFragment {
         if (arguments != null) {
             options = arguments.getParcelable("SUBLIME_OPTIONS");
         }
+
+        Calendar calendarAfter3 = Calendar.getInstance();
+        calendarAfter3.add(Calendar.MONTH, 3);
+        options.setDateRange(Calendar.getInstance().getTimeInMillis(),
+                calendarAfter3.getTimeInMillis());
 
         mSublimePicker.initializePicker(options, mListener);
         return mSublimePicker;

@@ -99,7 +99,6 @@ class DayPickerPagerAdapter extends PagerAdapter {
         }
     }
 
-
     public int getFirstDayOfWeek() {
         return mDayPicker.getFirstDayOfWeek();
     }

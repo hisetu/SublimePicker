@@ -34,7 +34,7 @@
         android:background="#8A8A8A"
         android:layout_height="1dp" />
 
-    <com.appeaser.sublimepickerlibrary.datepicker.DayPickerViewPager
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/redp_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

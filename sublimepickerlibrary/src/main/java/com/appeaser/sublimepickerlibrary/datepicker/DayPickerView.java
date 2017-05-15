@@ -21,7 +21,8 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,9 +50,9 @@ class DayPickerView extends ViewGroup {
 
     private final AccessibilityManager mAccessibilityManager;
 
-    private final DayPickerViewPager mViewPager;
+    private final RecyclerView mViewPager;
 
-    private final DayPickerPagerAdapter mAdapter;
+    private final DayPickerRecyclerViewAdapter mAdapter;
 
     /**
      * Temporary calendar used for date calculations.
@@ -107,7 +108,7 @@ class DayPickerView extends ViewGroup {
         }
 
         // Set up adapter.
-        mAdapter = new DayPickerPagerAdapter(context,
+        mAdapter = new DayPickerRecyclerViewAdapter(
                 R.layout.date_picker_month_item, R.id.month_view);
         mAdapter.setMonthTextAppearance(monthTextAppearanceResId);
         mAdapter.setDayTextAppearance(dayTextAppearanceResId);
@@ -133,13 +134,14 @@ class DayPickerView extends ViewGroup {
 
         mSeparateView = findViewById(R.id.line);
 
-        mViewPager = (DayPickerViewPager) findViewById(viewPagerIdToUse);
+        mViewPager = (RecyclerView) findViewById(viewPagerIdToUse);
+        mViewPager.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mViewPager.setAdapter(mAdapter);
 
         // Proxy selection callbacks to our own listener.
-        mAdapter.setDaySelectionEventListener(new DaySelectionEventListener<DayPickerPagerAdapter>() {
+        mAdapter.setDaySelectionEventListener(new DaySelectionEventListener<DayPickerRecyclerViewAdapter>() {
             @Override
-            public void onDaySelected(DayPickerPagerAdapter adapter, Calendar day) {
+            public void onDaySelected(DayPickerRecyclerViewAdapter adapter, Calendar day) {
                 if (mProxyDaySelectionEventListener != null) {
                     mProxyDaySelectionEventListener.onDaySelected(DayPickerView.this, day);
                 }
@@ -169,12 +171,11 @@ class DayPickerView extends ViewGroup {
     }
 
     public void setCanPickRange(boolean canPickRange) {
-        mViewPager.setCanPickRange(canPickRange);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final ViewPager viewPager = mViewPager;
+        final RecyclerView viewPager = mViewPager;
         measureChild(viewPager, widthMeasureSpec, heightMeasureSpec);
 
         mDayOfWeekView.measure(widthMeasureSpec, heightMeasureSpec);
@@ -208,11 +209,11 @@ class DayPickerView extends ViewGroup {
     }
 
     public void setDayOfWeekTextAppearance(int resId) {
-        mAdapter.setDayOfWeekTextAppearance(resId);
+        mDayOfWeekView.setTextAppearance(resId);
     }
 
     public int getDayOfWeekTextAppearance() {
-        return mAdapter.getDayOfWeekTextAppearance();
+        return mDayOfWeekView.getTextAppearance();
     }
 
     @SuppressWarnings("unused")
@@ -272,14 +273,6 @@ class DayPickerView extends ViewGroup {
     private void setDate(SelectedDate date, boolean animate, boolean setSelected, boolean goToPosition) {
         if (setSelected) {
             mSelectedDay = date;
-        }
-
-        final int position = getPositionFromDay(
-                mSelectedDay == null ? Calendar.getInstance().getTimeInMillis()
-                        : mSelectedDay.getStartDate().getTimeInMillis());
-
-        if (goToPosition && position != mViewPager.getCurrentItem()) {
-            mViewPager.setCurrentItem(position, animate);
         }
 
         mAdapter.setSelectedDay(new SelectedDate(mSelectedDay));
@@ -360,11 +353,11 @@ class DayPickerView extends ViewGroup {
      * Gets the position of the view that is most prominently displayed within the list view.
      */
     public int getMostVisiblePosition() {
-        return mViewPager.getCurrentItem();
+        return -1;
     }
 
     public void setPosition(int position) {
-        mViewPager.setCurrentItem(position, false);
+//        mViewPager.setCurrentItem(position, false);
     }
 
     public interface ProxyDaySelectionEventListener {

@@ -50,6 +50,7 @@ class DayOfWeekView extends View {
 
     private Context mContext;
     private int mCellWidth;
+    private int mTextAppearance;
 
     public DayOfWeekView(Context context) {
         this(context, null);
@@ -94,6 +95,7 @@ class DayOfWeekView extends View {
     }
 
     public void setTextAppearance(int resId) {
+        mTextAppearance = resId;
         applyTextAppearance(mDayOfWeekPaint, resId);
         invalidate();
     }
@@ -200,5 +202,9 @@ class DayOfWeekView extends View {
         }
 
         return textColor;
+    }
+
+    public int getTextAppearance() {
+        return mTextAppearance;
     }
 }
