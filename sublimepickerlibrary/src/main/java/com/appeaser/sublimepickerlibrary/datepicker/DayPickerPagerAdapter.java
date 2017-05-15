@@ -201,14 +201,6 @@ class DayPickerPagerAdapter extends PagerAdapter {
         mMonthTextAppearance = resId;
     }
 
-    void setDayOfWeekTextAppearance(int resId) {
-        mDayOfWeekTextAppearance = resId;
-    }
-
-    int getDayOfWeekTextAppearance() {
-        return mDayOfWeekTextAppearance;
-    }
-
     void setDayTextAppearance(int resId) {
         mDayTextAppearance = resId;
     }
