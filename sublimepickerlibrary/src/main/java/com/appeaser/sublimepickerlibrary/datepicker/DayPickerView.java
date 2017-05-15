@@ -62,6 +62,7 @@ class DayPickerView extends ViewGroup {
     private Calendar mTempCalendar;
 
     private ProxyDaySelectionEventListener mProxyDaySelectionEventListener;
+    private DayOfWeekView mDayOfWeekView;
 
     public DayPickerView(Context context) {
         this(context, null);
@@ -111,7 +112,6 @@ class DayPickerView extends ViewGroup {
         mAdapter = new DayPickerPagerAdapter(context,
                 R.layout.date_picker_month_item, R.id.month_view);
         mAdapter.setMonthTextAppearance(monthTextAppearanceResId);
-        mAdapter.setDayOfWeekTextAppearance(dayOfWeekTextAppearanceResId);
         mAdapter.setDayTextAppearance(dayTextAppearanceResId);
         mAdapter.setDaySelectorColor(daySelectorColor);
 
@@ -176,6 +176,9 @@ class DayPickerView extends ViewGroup {
                 updateButtonVisibility(position);
             }
         };
+
+        mDayOfWeekView = (DayOfWeekView) findViewById(R.id.day_of_week);
+        mDayOfWeekView.setTextAppearance(dayOfWeekTextAppearanceResId);
 
         mViewPager = (DayPickerViewPager) findViewById(viewPagerIdToUse);
         mViewPager.setAdapter(mAdapter);
@@ -251,6 +254,8 @@ class DayPickerView extends ViewGroup {
         final int buttonHeightSpec = MeasureSpec.makeMeasureSpec(pagerHeight, MeasureSpec.AT_MOST);
         mPrevButton.measure(buttonWidthSpec, buttonHeightSpec);
         mNextButton.measure(buttonWidthSpec, buttonHeightSpec);
+
+        mDayOfWeekView.measure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
@@ -274,7 +279,11 @@ class DayPickerView extends ViewGroup {
 
         final int width = right - left;
         final int height = bottom - top;
-        mViewPager.layout(0, 0, width, height);
+        final int dayOfWeekHeight = mDayOfWeekView.getMeasuredHeight();
+
+        mDayOfWeekView.layout(0, 0, width, 140);
+
+        mViewPager.layout(0, dayOfWeekHeight, width, height);
 
         final SimpleMonthView monthView = (SimpleMonthView) mViewPager.getChildAt(0)
                 .findViewById(R.id.month_view);
@@ -287,13 +296,13 @@ class DayPickerView extends ViewGroup {
         final int leftDH = leftButton.getMeasuredHeight();
         final int leftIconTop = monthView.getPaddingTop() + (monthHeight - leftDH) / 2;
         final int leftIconLeft = monthView.getPaddingLeft() + (cellWidth - leftDW) / 2;
-        leftButton.layout(leftIconLeft, leftIconTop, leftIconLeft + leftDW, leftIconTop + leftDH);
+        leftButton.layout(leftIconLeft, leftIconTop + dayOfWeekHeight, leftIconLeft + leftDW, leftIconTop + leftDH);
 
         final int rightDW = rightButton.getMeasuredWidth();
         final int rightDH = rightButton.getMeasuredHeight();
         final int rightIconTop = monthView.getPaddingTop() + (monthHeight - rightDH) / 2;
         final int rightIconRight = width - monthView.getPaddingRight() - (cellWidth - rightDW) / 2;
-        rightButton.layout(rightIconRight - rightDW, rightIconTop,
+        rightButton.layout(rightIconRight - rightDW, rightIconTop + dayOfWeekHeight,
                 rightIconRight, rightIconTop + rightDH);
     }
 

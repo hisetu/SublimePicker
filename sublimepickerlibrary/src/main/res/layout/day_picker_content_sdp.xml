@@ -21,6 +21,13 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <com.appeaser.sublimepickerlibrary.datepicker.DayOfWeekView
+        android:id="@+id/day_of_week"
+        android:paddingLeft="@dimen/sp_day_picker_padding_horizontal"
+        android:paddingRight="@dimen/sp_day_picker_padding_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <com.appeaser.sublimepickerlibrary.datepicker.DayPickerViewPager
         android:id="@+id/sdp_view_pager"
         android:layout_width="match_parent"

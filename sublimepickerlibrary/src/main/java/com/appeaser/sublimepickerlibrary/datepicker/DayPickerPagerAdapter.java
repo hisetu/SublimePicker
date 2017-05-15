@@ -295,7 +295,6 @@ class DayPickerPagerAdapter extends PagerAdapter {
         final SimpleMonthView v = (SimpleMonthView) itemView.findViewById(mCalendarViewId);
         v.setOnDayClickListener(mOnDayClickListener);
         v.setMonthTextAppearance(mMonthTextAppearance);
-        v.setDayOfWeekTextAppearance(mDayOfWeekTextAppearance);
         v.setDayTextAppearance(mDayTextAppearance);
 
         if (mDaySelectorColor != null) {
@@ -308,7 +307,6 @@ class DayPickerPagerAdapter extends PagerAdapter {
 
         if (mCalendarTextColor != null) {
             v.setMonthTextColor(mCalendarTextColor);
-            v.setDayOfWeekTextColor(mCalendarTextColor);
             v.setDayTextColor(mCalendarTextColor);
         }
 

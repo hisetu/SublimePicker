@@ -59,14 +59,13 @@ import java.util.Locale;
 class SimpleMonthView extends View {
     private static final String TAG = SimpleMonthView.class.getSimpleName();
 
-    private static final int DAYS_IN_WEEK = 7;
+    public static final int DAYS_IN_WEEK = 7;
     private static final int MAX_WEEKS_IN_MONTH = 6;
 
     private static final int DEFAULT_SELECTED_DAY = -1;
-    private static final int DEFAULT_WEEK_START = Calendar.SUNDAY;
+    public static final int DEFAULT_WEEK_START = Calendar.SUNDAY;
 
     private static final String DEFAULT_TITLE_FORMAT = "MMMMy";
-    private static final String DAY_OF_WEEK_FORMAT;
 
     @SuppressWarnings("FieldCanBeLocal")
     private final int DRAW_RECT = 0;
@@ -75,35 +74,21 @@ class SimpleMonthView extends View {
     @SuppressWarnings("FieldCanBeLocal")
     private final int DRAW_RECT_WITH_CURVE_ON_RIGHT = 2;
 
-    static {
-        // Deals with the change in usage of `EEEEE` pattern.
-        // See method `SimpleDateFormat#appendDayOfWeek(...)` for more details.
-        if (SUtils.isApi_18_OrHigher()) {
-            DAY_OF_WEEK_FORMAT = "EEEEE";
-        } else {
-            DAY_OF_WEEK_FORMAT = "E";
-        }
-    }
-
     private final TextPaint mMonthPaint = new TextPaint();
-    private final TextPaint mDayOfWeekPaint = new TextPaint();
     private final TextPaint mDayPaint = new TextPaint();
     private final Paint mDaySelectorPaint = new Paint();
     private final Paint mDayHighlightPaint = new Paint();
     private final Paint mDayRangeSelectorPaint = new Paint();
 
     private final Calendar mCalendar = Calendar.getInstance();
-    private final Calendar mDayOfWeekLabelCalendar = Calendar.getInstance();
 
     private MonthViewTouchHelper mTouchHelper;
 
     private SimpleDateFormat mTitleFormatter;
-    private SimpleDateFormat mDayOfWeekFormatter;
     private NumberFormat mDayFormatter;
 
     // Desired dimensions.
     private int mDesiredMonthHeight;
-    private int mDesiredDayOfWeekHeight;
     private int mDesiredDayHeight;
     private int mDesiredCellWidth;
     private int mDesiredDaySelectorRadius;
@@ -115,7 +100,6 @@ class SimpleMonthView extends View {
 
     // Dimensions as laid out.
     private int mMonthHeight;
-    private int mDayOfWeekHeight;
     private int mDayHeight;
     private int mCellWidth;
     private int mDaySelectorRadius;
@@ -206,7 +190,6 @@ class SimpleMonthView extends View {
 
         final Resources res = mContext.getResources();
         mDesiredMonthHeight = res.getDimensionPixelSize(R.dimen.sp_date_picker_month_height);
-        mDesiredDayOfWeekHeight = res.getDimensionPixelSize(R.dimen.sp_date_picker_day_of_week_height);
         mDesiredDayHeight = res.getDimensionPixelSize(R.dimen.sp_date_picker_day_height);
         mDesiredCellWidth = res.getDimensionPixelSize(R.dimen.sp_date_picker_day_width);
         mDesiredDaySelectorRadius = res.getDimensionPixelSize(
@@ -232,7 +215,6 @@ class SimpleMonthView extends View {
         }
 
         mTitleFormatter = new SimpleDateFormat(titleFormat, locale);
-        mDayOfWeekFormatter = new SimpleDateFormat(DAY_OF_WEEK_FORMAT, locale);
         mDayFormatter = NumberFormat.getIntegerInstance(locale);
 
         initPaints(res);
@@ -283,11 +265,6 @@ class SimpleMonthView extends View {
         invalidate();
     }
 
-    public void setDayOfWeekTextAppearance(int resId) {
-        applyTextAppearance(mDayOfWeekPaint, resId);
-        invalidate();
-    }
-
     public void setDayTextAppearance(int resId) {
         final ColorStateList textColor = applyTextAppearance(mDayPaint, resId);
         if (textColor != null) {
@@ -309,13 +286,10 @@ class SimpleMonthView extends View {
      */
     private void initPaints(Resources res) {
         final String monthTypeface = res.getString(R.string.sp_date_picker_month_typeface);
-        final String dayOfWeekTypeface = res.getString(R.string.sp_date_picker_day_of_week_typeface);
         final String dayTypeface = res.getString(R.string.sp_date_picker_day_typeface);
 
         final int monthTextSize = res.getDimensionPixelSize(
                 R.dimen.sp_date_picker_month_text_size);
-        final int dayOfWeekTextSize = res.getDimensionPixelSize(
-                R.dimen.sp_date_picker_day_of_week_text_size);
         final int dayTextSize = res.getDimensionPixelSize(
                 R.dimen.sp_date_picker_day_text_size);
 
@@ -324,12 +298,6 @@ class SimpleMonthView extends View {
         mMonthPaint.setTypeface(Typeface.create(monthTypeface, 0));
         mMonthPaint.setTextAlign(Paint.Align.CENTER);
         mMonthPaint.setStyle(Paint.Style.FILL);
-
-        mDayOfWeekPaint.setAntiAlias(true);
-        mDayOfWeekPaint.setTextSize(dayOfWeekTextSize);
-        mDayOfWeekPaint.setTypeface(Typeface.create(dayOfWeekTypeface, 0));
-        mDayOfWeekPaint.setTextAlign(Paint.Align.CENTER);
-        mDayOfWeekPaint.setStyle(Paint.Style.FILL);
 
         mDaySelectorPaint.setAntiAlias(true);
         mDaySelectorPaint.setStyle(Paint.Style.FILL);
@@ -350,12 +318,6 @@ class SimpleMonthView extends View {
     void setMonthTextColor(ColorStateList monthTextColor) {
         final int enabledColor = monthTextColor.getColorForState(ENABLED_STATE_SET, 0);
         mMonthPaint.setColor(enabledColor);
-        invalidate();
-    }
-
-    void setDayOfWeekTextColor(ColorStateList dayOfWeekTextColor) {
-        final int enabledColor = dayOfWeekTextColor.getColorForState(ENABLED_STATE_SET, 0);
-        mDayOfWeekPaint.setColor(enabledColor);
         invalidate();
     }
 
@@ -472,7 +434,6 @@ class SimpleMonthView extends View {
         canvas.translate(paddingLeft, paddingTop);
 
         drawMonth(canvas);
-        drawDaysOfWeek(canvas);
         drawDays(canvas);
 
         canvas.translate(-paddingLeft, -paddingTop);
@@ -488,43 +449,13 @@ class SimpleMonthView extends View {
         canvas.drawText(getTitle().toString(), x, y, mMonthPaint);
     }
 
-    private void drawDaysOfWeek(Canvas canvas) {
-        final TextPaint p = mDayOfWeekPaint;
-        final int headerHeight = mMonthHeight;
-        final int rowHeight = mDayOfWeekHeight;
-        final int colWidth = mCellWidth;
-
-        // Text is vertically centered within the day of week height.
-        final float halfLineHeight = (p.ascent() + p.descent()) / 2f;
-        final int rowCenter = headerHeight + rowHeight / 2;
-
-        for (int col = 0; col < DAYS_IN_WEEK; col++) {
-            final int colCenter = colWidth * col + colWidth / 2;
-            final int colCenterRtl;
-            if (SUtils.isLayoutRtlCompat(this)) {
-                colCenterRtl = mPaddedWidth - colCenter;
-            } else {
-                colCenterRtl = colCenter;
-            }
-
-            final int dayOfWeek = (col + mWeekStart) % DAYS_IN_WEEK;
-            final String label = getDayOfWeekLabel(dayOfWeek);
-            canvas.drawText(label, colCenterRtl, rowCenter - halfLineHeight, p);
-        }
-    }
-
-    private String getDayOfWeekLabel(int dayOfWeek) {
-        mDayOfWeekLabelCalendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-        return mDayOfWeekFormatter.format(mDayOfWeekLabelCalendar.getTime());
-    }
-
     /**
      * Draws the month days.
      */
     @SuppressWarnings("ConstantConditions")
     private void drawDays(Canvas canvas) {
         final TextPaint p = mDayPaint;
-        final int headerHeight = mMonthHeight + mDayOfWeekHeight;
+        final int headerHeight = mMonthHeight;
         //final int rowHeight = mDayHeight;
         final float rowHeight = mDayHeight;
         //final int colWidth = mCellWidth;
@@ -585,13 +516,13 @@ class SimpleMonthView extends View {
 
                 switch (bgShape) {
                     case DRAW_RECT_WITH_CURVE_ON_LEFT:
-                        int leftRectArcLeft = (int)(colCenterRtl - horDistFromCenter) % 2 == 1 ?
-                                (int)(colCenterRtl - horDistFromCenter) + 1
-                                : (int)(colCenterRtl - horDistFromCenter);
+                        int leftRectArcLeft = (int) (colCenterRtl - horDistFromCenter) % 2 == 1 ?
+                                (int) (colCenterRtl - horDistFromCenter) + 1
+                                : (int) (colCenterRtl - horDistFromCenter);
 
-                        int leftRectArcRight = (int)(colCenterRtl + horDistFromCenter) % 2 == 1 ?
-                                (int)(colCenterRtl + horDistFromCenter) + 1
-                                : (int)(colCenterRtl + horDistFromCenter);
+                        int leftRectArcRight = (int) (colCenterRtl + horDistFromCenter) % 2 == 1 ?
+                                (int) (colCenterRtl + horDistFromCenter) + 1
+                                : (int) (colCenterRtl + horDistFromCenter);
 
                         RectF leftArcRect = new RectF(leftRectArcLeft,
                                 rowCenter - rowHeight / 2f + mPaddingRangeIndicator,
@@ -607,13 +538,13 @@ class SimpleMonthView extends View {
                                 mDayRangeSelectorPaint);
                         break;
                     case DRAW_RECT_WITH_CURVE_ON_RIGHT:
-                        int rightRectArcLeft = (int)(colCenterRtl - horDistFromCenter) % 2 == 1 ?
-                                (int)(colCenterRtl - horDistFromCenter) + 1
-                                : (int)(colCenterRtl - horDistFromCenter);
+                        int rightRectArcLeft = (int) (colCenterRtl - horDistFromCenter) % 2 == 1 ?
+                                (int) (colCenterRtl - horDistFromCenter) + 1
+                                : (int) (colCenterRtl - horDistFromCenter);
 
-                        int rightRectArcRight = (int)(colCenterRtl + horDistFromCenter) % 2 == 1 ?
-                                (int)(colCenterRtl + horDistFromCenter) + 1
-                                : (int)(colCenterRtl + horDistFromCenter);
+                        int rightRectArcRight = (int) (colCenterRtl + horDistFromCenter) % 2 == 1 ?
+                                (int) (colCenterRtl + horDistFromCenter) + 1
+                                : (int) (colCenterRtl + horDistFromCenter);
 
                         RectF rightArcRect = new RectF(rightRectArcLeft,
                                 rowCenter - rowHeight / 2f + mPaddingRangeIndicator,
@@ -788,7 +719,7 @@ class SimpleMonthView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int preferredHeight = mDesiredDayHeight * MAX_WEEKS_IN_MONTH
-                + mDesiredDayOfWeekHeight + mDesiredMonthHeight
+                + mDesiredMonthHeight
                 + getPaddingTop() + getPaddingBottom();
 
         final int preferredWidth = mDesiredCellWidth * DAYS_IN_WEEK
@@ -837,7 +768,6 @@ class SimpleMonthView extends View {
         final int monthHeight = (int) (mDesiredMonthHeight * scaleH);
         final int cellWidth = mPaddedWidth / DAYS_IN_WEEK;
         mMonthHeight = monthHeight;
-        mDayOfWeekHeight = (int) (mDesiredDayOfWeekHeight * scaleH);
         mDayHeight = (int) (mDesiredDayHeight * scaleH);
         mCellWidth = cellWidth;
 
@@ -876,7 +806,7 @@ class SimpleMonthView extends View {
             return -1;
         }
 
-        final int headerHeight = mMonthHeight + mDayOfWeekHeight;
+        final int headerHeight = mMonthHeight;
         final int paddedY = y - getPaddingTop();
         if (paddedY < headerHeight || paddedY >= mPaddedHeight) {
             return -1;
@@ -927,7 +857,7 @@ class SimpleMonthView extends View {
         // Compute top edge.
         final int row = index / DAYS_IN_WEEK;
         final int rowHeight = mDayHeight;
-        final int headerHeight = mMonthHeight + mDayOfWeekHeight;
+        final int headerHeight = mMonthHeight;
         final int top = getPaddingTop() + headerHeight + row * rowHeight;
 
         outBounds.set(left, top, left + colWidth, top + rowHeight);
