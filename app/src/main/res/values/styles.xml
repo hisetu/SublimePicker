@@ -27,13 +27,22 @@
         <item name="sublimePickerStyle">@style/SPDefaultImpl</item>
     </style>
 
+    <style name="SublimeDatePickerStyle">
+        <item name="spFirstDayOfWeek">0</item>
+        <item name="spHeaderBackground">?spHeaderBackgroundPtr</item>
+        <item name="spMinDate">01/01/1900</item>
+        <item name="spMaxDate">12/31/2100</item>
+        <item name="spHeaderTextColor">#19BFEF</item>
+    </style>
+
     <style name="SPDefaultImpl" parent="SublimePickerStyleLight">
-        <item name="colorAccent">@color/c_accent</item>
+        <item name="colorAccent">#19BFEF</item>
         <item name="colorPrimaryDark">@color/c_primary_dark</item>
         <item name="colorPrimary">@color/c_primary</item>
         <item name="android:textColorPrimary">#212121</item>
         <item name="android:textColorSecondary">#727272</item>
         <item name="android:textColorPrimaryInverse">#FFFFFF</item>
+        <item name="spHeaderBackgroundPtr">#FFFFFF</item>
     </style>
 
     <style name="SPMonthLabelTextAppearance" parent="TextAppearance.AppCompat.Body2">
@@ -48,6 +57,12 @@
     <!-- TextAppearance.Material.Widget.Calendar.Day -->
     <style name="SPDayTextAppearance" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textColor">?attr/spCalendarDayTextColorPtr</item>
+    </style>
+
+    <style name="SPDateRangeLabelTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#19BFEF</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
 </resources>
