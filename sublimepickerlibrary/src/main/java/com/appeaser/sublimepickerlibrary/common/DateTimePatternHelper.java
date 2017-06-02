@@ -716,16 +716,16 @@ public class DateTimePatternHelper {
         sDateTimePatterns.put("yo_NG", new String[]{"EEE, MMM d", "MMMM y", "h:mm a", "HH:mm"});
         sDateTimePatterns.put("zgh", new String[]{"EEE d MMM", "MMMM y", "h:mm a", "HH:mm"});
         sDateTimePatterns.put("zgh_MA", new String[]{"EEE d MMM", "MMMM y", "h:mm a", "HH:mm"});
-        sDateTimePatterns.put("zh", new String[]{"M月d日EEE", "y年M月", "ah:mm", "HH:mm"});
-        sDateTimePatterns.put("zh__#Hans", new String[]{"M月d日EEE", "y年M月", "ah:mm", "HH:mm"});
-        sDateTimePatterns.put("zh_CN_#Hans", new String[]{"M月d日EEE", "y年M月", "ah:mm", "HH:mm"});
-        sDateTimePatterns.put("zh_HK_#Hans", new String[]{"M月d日EEE", "y年M月", "ah:mm", "HH:mm"});
-        sDateTimePatterns.put("zh_MO_#Hans", new String[]{"M月d日EEE", "y年M月", "ah:mm", "HH:mm"});
-        sDateTimePatterns.put("zh_SG_#Hans", new String[]{"M月d日EEE", "y年M月", "ah:mm", "HH:mm"});
-        sDateTimePatterns.put("zh__#Hant", new String[]{"M月d日EEE", "y年M月", "ah:mm", "HH:mm"});
-        sDateTimePatterns.put("zh_HK_#Hant", new String[]{"M月d日 (EEE)", "y 年 M 月", "ah:mm", "HH:mm"});
-        sDateTimePatterns.put("zh_MO_#Hant", new String[]{"M月d日 (EEE)", "y 年 M 月", "ah:mm", "HH:mm"});
-        sDateTimePatterns.put("zh_TW_#Hant", new String[]{"M月d日EEE", "y年M月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh", new String[]{"EEE\nM月d日", "y年M月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh__#Hans", new String[]{"EEE\nM月d日", "y年M月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh_CN_#Hans", new String[]{"EEE\nM月d日", "y年M月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh_HK_#Hans", new String[]{"EEE\nM月d日", "y年M月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh_MO_#Hans", new String[]{"EEE\nM月d日", "y年M月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh_SG_#Hans", new String[]{"EEE\nM月d日", "y年M月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh__#Hant", new String[]{"EEE\nM月d日", "y年M月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh_HK_#Hant", new String[]{"EEE\nM月d日", "y 年 M 月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh_MO_#Hant", new String[]{"EEE\nM月d日", "y 年 M 月", "ah:mm", "HH:mm"});
+        sDateTimePatterns.put("zh_TW_#Hant", new String[]{"EEE\nM月d日", "y年M月", "ah:mm", "HH:mm"});
         sDateTimePatterns.put("zu", new String[]{"EEE, MMM d", "MMMM y", "h:mm a", "HH:mm"});
         sDateTimePatterns.put("zu_ZA", new String[]{"EEE, MMM d", "MMMM y", "h:mm a", "HH:mm"});
     }

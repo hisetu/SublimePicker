@@ -61,7 +61,7 @@
 
     <style name="SPDateRangeLabelTextAppearance" parent="TextAppearance.AppCompat">
         <item name="android:textColor">#19BFEF</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 

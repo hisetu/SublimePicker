@@ -34,7 +34,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.format.DateUtils;
 import android.text.style.AlignmentSpan;
-import android.text.style.RelativeSizeSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -417,11 +416,7 @@ public class SublimeDatePicker extends FrameLayout {
         // Update the date formatter.
         String datePattern;
 
-        if (SUtils.isApi_18_OrHigher()) {
-            datePattern = android.text.format.DateFormat.getBestDateTimePattern(locale, "EMMMd");
-        } else {
-            datePattern = DateTimePatternHelper.getBestDateTimePattern(locale, DateTimePatternHelper.PATTERN_EMMMd);
-        }
+        datePattern = DateTimePatternHelper.getBestDateTimePattern(locale, DateTimePatternHelper.PATTERN_EMMMd);
 
         mMonthDayFormat = new SimpleDateFormat(datePattern, locale);
         mYearFormat = new SimpleDateFormat("y", locale);
@@ -443,28 +438,23 @@ public class SublimeDatePicker extends FrameLayout {
         final String monthDay = mMonthDayFormat.format(mCurrentDate.getStartDate().getTime());
         mHeaderMonthDay.setText(monthDay);
 
-        final String yearStrStart = mYearFormat.format(mCurrentDate.getStartDate().getTime());
         final String monthDayStrStart = mMonthDayFormat.format(mCurrentDate.getStartDate().getTime());
-        final String dateStrStart = yearStrStart + "\n" + monthDayStrStart;
 
-        final String yearStrEnd = mYearFormat.format(mCurrentDate.getEndDate().getTime());
-        final String monthDayStrEnd = mMonthDayFormat.format(mCurrentDate.getEndDate().getTime());
-        final String dateStrEnd = yearStrEnd + "\n" + monthDayStrEnd;
+        String monthDayStrEnd = mMonthDayFormat.format(mCurrentDate.getEndDate().getTime());
 
-        SpannableString spDateStart = new SpannableString(dateStrStart);
+        if (monthDayStrEnd.equals(monthDayStrStart)) {
+            monthDayStrEnd = getContext().getString(R.string.end_date);
+        }
+
+        SpannableString spDateStart = new SpannableString(monthDayStrStart);
         // If textSize is 34dp for land, use 0.47f
         //spDateStart.setSpan(new RelativeSizeSpan(mIsInLandscapeMode ? 0.47f : 0.7f),
-        spDateStart.setSpan(new RelativeSizeSpan(0.7f),
-                0, yearStrStart.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        SpannableString spDateEnd = new SpannableString(dateStrEnd);
-        spDateEnd.setSpan(new RelativeSizeSpan(0.7f),
-                0, yearStrEnd.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString spDateEnd = new SpannableString(monthDayStrEnd);
 
         // API <= 16
         if (!mIsInLandscapeMode && !SUtils.isApi_17_OrHigher()) {
             spDateEnd.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE),
-                    0, dateStrEnd.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    0, monthDayStrStart.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         tvHeaderDateStart.setText(spDateStart);
@@ -611,7 +601,7 @@ public class SublimeDatePicker extends FrameLayout {
             mCurrentlyActivatedRangeItem = RANGE_ACTIVATED_START;
         }
 
-        llHeaderDateSingleCont.setVisibility(View.INVISIBLE);
+        llHeaderDateSingleCont.setVisibility(View.GONE);
         ivHeaderDateReset.setVisibility(View.VISIBLE);
         llHeaderDateRangeCont.setVisibility(View.VISIBLE);
 

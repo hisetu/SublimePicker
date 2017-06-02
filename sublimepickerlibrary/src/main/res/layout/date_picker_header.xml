@@ -55,14 +55,16 @@
     <LinearLayout
         android:id="@+id/ll_header_date_range_cont"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
         android:orientation="horizontal"
         android:visibility="invisible"
+        android:gravity="center_vertical"
         android:layout_gravity="bottom"
         android:paddingStart="?attr/dialogPreferredPadding"
         android:paddingLeft="?attr/dialogPreferredPadding"
         android:paddingEnd="?attr/dialogPreferredPadding"
         android:paddingRight="?attr/dialogPreferredPadding"
+        android:paddingTop="18dp"
         android:paddingBottom="18dp">
 
         <TextView
@@ -74,13 +76,12 @@
             android:ellipsize="none" />
 
         <TextView
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textAppearance="@style/SPDateRangeLabelTextAppearance"
-            android:textSize="26sp"
             android:text="/"/>
 
         <TextView
