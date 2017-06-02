@@ -116,6 +116,7 @@ public class SublimeDatePicker extends FrameLayout {
     private int mCurrentlyActivatedRangeItem = RANGE_ACTIVATED_NONE;
 
     private boolean mIsInLandscapeMode;
+    private boolean mCanPickRange;
 
     public SublimeDatePicker(Context context) {
         this(context, null);
@@ -132,7 +133,7 @@ public class SublimeDatePicker extends FrameLayout {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SublimeDatePicker(Context context, AttributeSet attrs,
-                                     int defStyleAttr, int defStyleRes) {
+                             int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initializeLayout(attrs, defStyleAttr, defStyleRes);
     }
@@ -515,10 +516,10 @@ public class SublimeDatePicker extends FrameLayout {
      * Initialize the state. If the provided values designate an inconsistent
      * date the values are normalized before updating the spinners.
      *
-     * @param selectedDate  The initial date or date range.
-     * @param canPickRange  Enable/disable date range selection
-     * @param callback      How user is notified date is changed by
-     *                      user, can be null.
+     * @param selectedDate The initial date or date range.
+     * @param canPickRange Enable/disable date range selection
+     * @param callback     How user is notified date is changed by
+     *                     user, can be null.
      */
     //public void init(int year, int monthOfYear, int dayOfMonth, boolean canPickRange,
     public void init(SelectedDate selectedDate, boolean canPickRange,
@@ -528,7 +529,8 @@ public class SublimeDatePicker extends FrameLayout {
         //mCurrentDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         mCurrentDate = new SelectedDate(selectedDate);
 
-        mDayPickerView.setCanPickRange(canPickRange);
+        this.mCanPickRange = canPickRange;
+        mDayPickerView.setCanPickRange(this.mCanPickRange);
         mDateChangedListener = callback;
 
         onDateChanged(false, false, true);
@@ -590,6 +592,10 @@ public class SublimeDatePicker extends FrameLayout {
     }
 
     private void switchToSingleDateView() {
+        if (mCanPickRange) {
+            switchToDateRangeView();
+            return;
+        }
         mCurrentlyActivatedRangeItem = RANGE_ACTIVATED_NONE;
 
         ivHeaderDateReset.setVisibility(View.GONE);
