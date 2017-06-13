@@ -63,6 +63,7 @@ class DayPickerView extends ViewGroup {
     private Calendar mTempCalendar;
 
     private ProxyDaySelectionEventListener mProxyDaySelectionEventListener;
+    private List<Calendar> mCanNotPickDates;
 
     public DayPickerView(Context context) {
         this(context, null);
@@ -212,9 +213,38 @@ class DayPickerView extends ViewGroup {
 
             @Override
             public void onDateRangeSelectionEnded(@Nullable SelectedDate selectedDate) {
+                if (selectedDate != null
+                        && selectedDate.getFirstDate().getTimeInMillis()
+                        > selectedDate.getSecondDate().getTimeInMillis()) {
+                    Calendar firstDate = selectedDate.getFirstDate();
+                    Calendar secondDate = selectedDate.getSecondDate();
+                    selectedDate.setFirstDate(secondDate);
+                    selectedDate.setSecondDate(firstDate);
+                }
+
                 if (mProxyDaySelectionEventListener != null) {
+                    if (mCanNotPickDates != null) {
+                        selectedDate = getReasonableDate(selectedDate);
+                    }
                     mProxyDaySelectionEventListener.onDateRangeSelectionEnded(selectedDate);
                 }
+            }
+
+            private SelectedDate getReasonableDate(@Nullable SelectedDate selectedDate) {
+                for (Calendar canNotPickDate : mCanNotPickDates) {
+                    if (isInSelectedDate(selectedDate, canNotPickDate)) {
+                        Calendar newEndDate = (Calendar) canNotPickDate.clone();
+                        newEndDate.add(Calendar.DAY_OF_MONTH, -1);
+                        selectedDate.setSecondDate(newEndDate);
+                    }
+                }
+                return selectedDate;
+            }
+
+            private boolean isInSelectedDate(@Nullable SelectedDate selectedDate, Calendar calendar) {
+                return selectedDate != null
+                        && calendar.getTimeInMillis() > selectedDate.getStartDate().getTimeInMillis()
+                        && calendar.getTimeInMillis() < selectedDate.getEndDate().getTimeInMillis();
             }
 
             @Override
@@ -461,6 +491,7 @@ class DayPickerView extends ViewGroup {
     }
 
     public void setCanNotPickDates(List<Calendar> dates) {
+        mCanNotPickDates = dates;
         mAdapter.setCanNotPickDates(dates);
         onRangeChanged();
     }
