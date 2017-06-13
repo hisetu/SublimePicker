@@ -48,6 +48,7 @@ import com.appeaser.sublimepickerlibrary.utilities.SUtils;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -176,6 +177,8 @@ class SimpleMonthView extends View {
     private int mTouchSlopSquared;
 
     private float mPaddingRangeIndicator;
+
+    private List<Integer> mCanNotPickDates;
 
     public SimpleMonthView(Context context) {
         this(context, null);
@@ -670,7 +673,8 @@ class SimpleMonthView extends View {
     }
 
     private boolean isDayEnabled(int day) {
-        return day >= mEnabledDayStart && day <= mEnabledDayEnd;
+        return day >= mEnabledDayStart && day <= mEnabledDayEnd
+                && !mCanNotPickDates.contains(day);
     }
 
     private boolean isValidDayOfMonth(int day) {
@@ -737,7 +741,7 @@ class SimpleMonthView extends View {
      */
     void setMonthParams(int month, int year, int weekStart, int enabledDayStart,
                         int enabledDayEnd, int selectedDayStart, int selectedDayEnd,
-                        SelectedDate.Type selectedDateType) {
+                        SelectedDate.Type selectedDateType, List<Integer> canNotPickDates) {
         if (isValidMonth(month)) {
             mMonth = month;
         }
@@ -774,6 +778,8 @@ class SimpleMonthView extends View {
         mActivatedDays.startingDay = selectedDayStart;
         mActivatedDays.endingDay = selectedDayEnd;
         mActivatedDays.selectedDateType = selectedDateType;
+
+        mCanNotPickDates = (canNotPickDates == null) ? new ArrayList<Integer>() : canNotPickDates;
 
         // Invalidate cached accessibility information.
         mTouchHelper.invalidateRoot();

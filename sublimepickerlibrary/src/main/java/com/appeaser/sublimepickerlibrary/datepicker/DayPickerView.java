@@ -35,6 +35,7 @@ import com.appeaser.sublimepickerlibrary.utilities.Config;
 import com.appeaser.sublimepickerlibrary.utilities.SUtils;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * This displays a list of months in a calendar format with selectable days.
@@ -457,6 +458,11 @@ class DayPickerView extends ViewGroup {
 
     public void setPosition(int position) {
         mViewPager.setCurrentItem(position, false);
+    }
+
+    public void setCanNotPickDates(List<Calendar> dates) {
+        mAdapter.setCanNotPickDates(dates);
+        onRangeChanged();
     }
 
     public interface ProxyDaySelectionEventListener {

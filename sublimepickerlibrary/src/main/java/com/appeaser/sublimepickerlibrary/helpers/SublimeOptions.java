@@ -25,7 +25,10 @@ import com.appeaser.sublimepickerlibrary.datepicker.SelectedDate;
 import com.appeaser.sublimepickerlibrary.recurrencepicker.SublimeRecurrencePicker;
 import com.appeaser.sublimepickerlibrary.utilities.SUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -60,6 +63,8 @@ public class SublimeOptions implements Parcelable {
 
     // Allow date range selection
     private boolean mCanPickDateRange;
+
+    private List<Calendar> mCanNotPickDates;
 
     // Defaults
     private Picker mPickerToShow = Picker.DATE_PICKER;
@@ -179,6 +184,18 @@ public class SublimeOptions implements Parcelable {
         mMinDate = minDate;
         mMaxDate = maxDate;
         return this;
+    }
+
+    public SublimeOptions addCanNotPickDate(Calendar day){
+        if(mCanNotPickDates == null){
+            mCanNotPickDates = new ArrayList<>();
+        }
+        mCanNotPickDates.add(day);
+        return this;
+    }
+
+    public List<Calendar> getCanNotPickDates(){
+        return mCanNotPickDates;
     }
 
     // Provide initial time parameters
@@ -333,6 +350,18 @@ public class SublimeOptions implements Parcelable {
         mIs24HourView = in.readByte() != 0;
         mRecurrenceRule = in.readString();
         mCanPickDateRange = in.readByte() != 0;
+
+        int canNotPickDateSize = in.readInt();
+        if(canNotPickDateSize > 0){
+            long[] longs = new long[canNotPickDateSize];
+            in.readLongArray(longs);
+            mCanNotPickDates = new ArrayList<>();
+            for (long aLong : longs) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date(aLong));
+                mCanNotPickDates.add(calendar);
+            }
+        }
     }
 
     @Override
@@ -351,6 +380,15 @@ public class SublimeOptions implements Parcelable {
         dest.writeByte((byte) (mIs24HourView ? 1 : 0));
         dest.writeString(mRecurrenceRule);
         dest.writeByte((byte) (mCanPickDateRange ? 1 : 0));
+
+        dest.writeInt(mCanNotPickDates.size());
+        if(mCanNotPickDates!=null && mCanNotPickDates.size() > 0){
+            long[] longs = new long[mCanNotPickDates.size()];
+            for (int i = 0; i < mCanNotPickDates.size(); i++) {
+                longs[i] = mCanNotPickDates.get(i).getTimeInMillis();
+            }
+            dest.writeLongArray(longs);
+        }
     }
 
     public static final Parcelable.Creator<SublimeOptions> CREATOR = new Parcelable.Creator<SublimeOptions>() {

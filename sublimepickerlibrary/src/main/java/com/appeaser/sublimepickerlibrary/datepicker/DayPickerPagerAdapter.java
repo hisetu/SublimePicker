@@ -34,7 +34,9 @@ import com.appeaser.sublimepickerlibrary.R;
 import com.appeaser.sublimepickerlibrary.utilities.Config;
 import com.appeaser.sublimepickerlibrary.utilities.SUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * An adapter for a list of {@link SimpleMonthView} items.
@@ -71,6 +73,8 @@ class DayPickerPagerAdapter extends PagerAdapter {
 
     // used in resolving start/end dates during range selection
     private final SelectedDate mTempSelectedDay = new SelectedDate(Calendar.getInstance());
+
+    private List<Calendar> mCanNotPickDates;
 
     public DayPickerPagerAdapter(@NonNull Context context, @LayoutRes int layoutResId,
                                  @IdRes int calendarViewId) {
@@ -335,9 +339,21 @@ class DayPickerPagerAdapter extends PagerAdapter {
             Log.i(TAG, "mSelectedDay.getType(): " + (mSelectedDay != null ? mSelectedDay.getType() : null));
         }
 
+        List<Integer> canNotPickDays = null;
+        if (mCanNotPickDates != null) {
+            canNotPickDays = new ArrayList<>();
+            for (Calendar mCanNotPickDate : mCanNotPickDates) {
+                if (mCanNotPickDate.get(Calendar.YEAR) == year
+                        && mCanNotPickDate.get(Calendar.MONTH) == month) {
+                    canNotPickDays.add(mCanNotPickDate.get(Calendar.DAY_OF_MONTH));
+                }
+            }
+        }
+
         v.setMonthParams(month, year, mFirstDayOfWeek,
                 enabledDayRangeStart, enabledDayRangeEnd, selectedDay[0], selectedDay[1],
-                mSelectedDay != null ? mSelectedDay.getType() : null);
+                mSelectedDay != null ? mSelectedDay.getType() : null,
+                canNotPickDays);
 
         final ViewHolder holder = new ViewHolder(position, itemView, v);
         mItems.put(position, holder);
@@ -380,6 +396,11 @@ class DayPickerPagerAdapter extends PagerAdapter {
             }
         }
     };
+
+    public void setCanNotPickDates(List<Calendar> canNotPickDates) {
+        this.mCanNotPickDates = canNotPickDates;
+        notifyDataSetChanged();
+    }
 
     private static class ViewHolder {
         public final int position;

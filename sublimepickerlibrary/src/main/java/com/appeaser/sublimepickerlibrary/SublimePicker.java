@@ -567,6 +567,10 @@ public class SublimePicker extends FrameLayout
                 mDatePicker.setMaxDate(dateRange[1]);
             }
 
+            if(mOptions.getCanNotPickDates() != null
+                    && !mOptions.getCanNotPickDates().isEmpty())
+                mDatePicker.setCanNotPickDates(mOptions.getCanNotPickDates());
+
             mDatePicker.setValidationCallback(this);
 
             ivRecurrenceOptionsDP.setVisibility(mRecurrencePickerEnabled ?

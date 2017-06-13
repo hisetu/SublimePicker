@@ -56,6 +56,7 @@ import com.appeaser.sublimepickerlibrary.utilities.TextColorHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class SublimeDatePicker extends FrameLayout {
@@ -820,6 +821,11 @@ public class SublimeDatePicker extends FrameLayout {
         if (mValidationCallback != null) {
             mValidationCallback.onDatePickerValidationChanged(valid);
         }
+    }
+
+    public void setCanNotPickDates(List<Calendar> canNotPickDates) {
+        mDayPickerView.setCanNotPickDates(canNotPickDates);
+        onDateChanged(false, false, false);
     }
 
     /**
