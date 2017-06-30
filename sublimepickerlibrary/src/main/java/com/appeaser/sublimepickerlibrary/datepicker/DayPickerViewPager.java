@@ -54,9 +54,7 @@ class DayPickerViewPager extends ViewPager {
     private DayPickerPagerAdapter mDayPickerPagerAdapter;
 
     private float mInitialDownX, mInitialDownY;
-    private boolean mIsLongPressed = false;
 
-    private CheckForLongPress mCheckForLongPress;
     private SelectedDate mTempSelectedDate;
 
     // Scrolling support
@@ -217,23 +215,12 @@ class DayPickerViewPager extends ViewPager {
 
             mInitialDownX = ev.getX();
             mInitialDownY = ev.getY();
-
-            if (mCheckForLongPress == null) {
-                mCheckForLongPress = new CheckForLongPress();
-            }
-
-            postDelayed(mCheckForLongPress, ViewConfiguration.getLongPressTimeout());
         } else if (ev.getAction() == MotionEvent.ACTION_UP
                 || ev.getAction() == MotionEvent.ACTION_CANCEL) {
             if (Config.DEBUG) {
                 Log.i(TAG, "OITE: (UP || CANCEL)");
             }
 
-            if (mCheckForLongPress != null) {
-                removeCallbacks(mCheckForLongPress);
-            }
-
-            mIsLongPressed = false;
             mInitialDownX = -1;
             mInitialDownY = -1;
         } else if (ev.getAction() == MotionEvent.ACTION_MOVE) {
@@ -245,39 +232,15 @@ class DayPickerViewPager extends ViewPager {
                 if (Config.DEBUG) {
                     Log.i(TAG, "OITE: MOVED TOO MUCH, CANCELLING CheckForLongPress Runnable");
                 }
-
-                if (mCheckForLongPress != null) {
-                    removeCallbacks(mCheckForLongPress);
-                }
             }
         }
 
-        return mIsLongPressed || super.onInterceptTouchEvent(ev);
+        return true;
     }
 
     private boolean isStillALongPress(int x, int y) {
         return (((x - mInitialDownX) * (x - mInitialDownX))
                 + ((y - mInitialDownY) * (y - mInitialDownY))) <= TOUCH_SLOP_SQUARED;
-    }
-
-    private class CheckForLongPress implements Runnable {
-        @Override
-        public void run() {
-            if (mDayPickerPagerAdapter != null) {
-
-                mTempSelectedDate = mDayPickerPagerAdapter.resolveStartDateForRange((int) mInitialDownX,
-                        (int) mInitialDownY, getCurrentItem());
-
-                if (mTempSelectedDate != null) {
-                    if (Config.DEBUG) {
-                        Log.i(TAG, "CheckForLongPress Runnable Fired");
-                    }
-
-                    mIsLongPressed = true;
-                    mDayPickerPagerAdapter.onDateRangeSelectionStarted(mTempSelectedDate);
-                }
-            }
-        }
     }
 
     @Override
@@ -286,12 +249,7 @@ class DayPickerViewPager extends ViewPager {
             return super.onTouchEvent(ev);
         }
 
-        // looks like the ViewPager wants to step in
-        if (mCheckForLongPress != null) {
-            removeCallbacks(mCheckForLongPress);
-        }
-
-        if (mIsLongPressed && ev.getAction() == MotionEvent.ACTION_UP
+        if (ev.getAction() == MotionEvent.ACTION_UP
                 || ev.getAction() == MotionEvent.ACTION_CANCEL) {
             if (Config.DEBUG) {
                 Log.i(TAG, "OTE: LONGPRESS && (UP || CANCEL)");
@@ -305,7 +263,6 @@ class DayPickerViewPager extends ViewPager {
                 }
             }
 
-            mIsLongPressed = false;
             mInitialDownX = -1;
             mInitialDownY = -1;
             mScrollingDirection = NOT_SCROLLING;
@@ -314,47 +271,22 @@ class DayPickerViewPager extends ViewPager {
                 removeCallbacks(mScrollerRunnable);
             }
             //return true;
-        } else if (mIsLongPressed && ev.getAction() == MotionEvent.ACTION_DOWN) {
+        } else if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             if (Config.DEBUG) {
                 Log.i(TAG, "OTE: LONGPRESS && DOWN");
             }
 
+
+            if (mTempSelectedDate != null && mTempSelectedDate.getType() == SelectedDate.Type.RANGE) {
+                mTempSelectedDate = mDayPickerPagerAdapter.resolveStartDateForRange((int) ev.getX(),
+                        (int) ev.getY(), getCurrentItem());
+            }
+
             mScrollingDirection = NOT_SCROLLING;
-        } else if (mIsLongPressed && ev.getAction() == MotionEvent.ACTION_MOVE) {
-            if (Config.DEBUG) {
-                Log.i(TAG, "OTE: LONGPRESS && MOVE");
-            }
-
-            int direction = resolveDirectionForScroll(ev.getX());
-            boolean directionChanged = mScrollingDirection != direction;
-
-            if (directionChanged) {
-                if (mScrollerRunnable != null) {
-                    removeCallbacks(mScrollerRunnable);
-                }
-            }
-
-            if (mScrollerRunnable == null) {
-                mScrollerRunnable = new ScrollerRunnable();
-            }
-
-            mScrollingDirection = direction;
-
-            if (mScrollingDirection == NOT_SCROLLING) {
-                if (mDayPickerPagerAdapter != null) {
-                    mTempSelectedDate = mDayPickerPagerAdapter.resolveEndDateForRange((int) ev.getX(),
-                            (int) ev.getY(), getCurrentItem(), true);
-
-                    if (mTempSelectedDate != null) {
-                        mDayPickerPagerAdapter.onDateRangeSelectionUpdated(mTempSelectedDate);
-                    }
-                }
-            } else if (directionChanged) { // SCROLLING_LEFT || SCROLLING_RIGHT
-                post(mScrollerRunnable);
-            }
+            mDayPickerPagerAdapter.onDateRangeSelectionStarted(mTempSelectedDate);
         }
 
-        return mIsLongPressed || super.onTouchEvent(ev);
+        return true;
     }
 
     private int resolveDirectionForScroll(float x) {
