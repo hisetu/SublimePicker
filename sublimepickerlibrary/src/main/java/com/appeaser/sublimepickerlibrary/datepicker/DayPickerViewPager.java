@@ -276,10 +276,14 @@ class DayPickerViewPager extends ViewPager {
                 Log.i(TAG, "OTE: LONGPRESS && DOWN");
             }
 
+            if (mTempSelectedDate != null
+                    && mTempSelectedDate.getType() == SelectedDate.Type.RANGE) {
+                mTempSelectedDate = mDayPickerPagerAdapter
+                        .resolveStartDateForRange((int) ev.getX(), (int) ev.getY(), getCurrentItem());
+            }
 
-            if (mTempSelectedDate != null && mTempSelectedDate.getType() == SelectedDate.Type.RANGE) {
-                mTempSelectedDate = mDayPickerPagerAdapter.resolveStartDateForRange((int) ev.getX(),
-                        (int) ev.getY(), getCurrentItem());
+            if (mTempSelectedDate == null) {
+                return true;
             }
 
             mScrollingDirection = NOT_SCROLLING;

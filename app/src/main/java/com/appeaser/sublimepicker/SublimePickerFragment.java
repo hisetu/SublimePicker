@@ -48,7 +48,7 @@ public class SublimePickerFragment extends DialogFragment {
     SublimeListenerAdapter mListener = new SublimeListenerAdapter() {
         @Override
         public void onCancelled() {
-            if (mCallback!= null) {
+            if (mCallback != null) {
                 mCallback.onCancelled();
             }
 
@@ -112,14 +112,18 @@ public class SublimePickerFragment extends DialogFragment {
             options = arguments.getParcelable("SUBLIME_OPTIONS");
         }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        options.addCanNotPickDate(calendar);
+        Calendar startDate = Calendar.getInstance();
+        startDate.add(Calendar.DAY_OF_MONTH, 2);
+
+        Calendar endDate = Calendar.getInstance();
+        endDate.add(Calendar.MONTH, 2);
 
         Calendar calendar2 = Calendar.getInstance();
         calendar2.add(Calendar.MONTH, 1);
         calendar2.add(Calendar.DAY_OF_MONTH, 3);
         options.addCanNotPickDate(calendar2);
+
+        options.setDateRange(startDate.getTimeInMillis(), endDate.getTimeInMillis());
 
         mSublimePicker.initializePicker(options, mListener);
         return mSublimePicker;
