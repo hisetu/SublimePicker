@@ -124,6 +124,7 @@ public class SublimePickerFragment extends DialogFragment {
         options.addCanNotPickDate(calendar2);
 
         options.setDateRange(startDate.getTimeInMillis(), endDate.getTimeInMillis());
+        options.setDateParams(startDate);
 
         mSublimePicker.initializePicker(options, mListener);
         return mSublimePicker;

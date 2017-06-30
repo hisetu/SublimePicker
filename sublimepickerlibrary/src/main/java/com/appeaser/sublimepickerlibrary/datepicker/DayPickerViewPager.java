@@ -53,8 +53,6 @@ class DayPickerViewPager extends ViewPager {
     private boolean mCanPickRange;
     private DayPickerPagerAdapter mDayPickerPagerAdapter;
 
-    private float mInitialDownX, mInitialDownY;
-
     private SelectedDate mTempSelectedDate;
 
     // Scrolling support
@@ -204,43 +202,7 @@ class DayPickerViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!mCanPickRange) {
-            return super.onInterceptTouchEvent(ev);
-        }
-
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (Config.DEBUG) {
-                Log.i(TAG, "OITE: DOWN");
-            }
-
-            mInitialDownX = ev.getX();
-            mInitialDownY = ev.getY();
-        } else if (ev.getAction() == MotionEvent.ACTION_UP
-                || ev.getAction() == MotionEvent.ACTION_CANCEL) {
-            if (Config.DEBUG) {
-                Log.i(TAG, "OITE: (UP || CANCEL)");
-            }
-
-            mInitialDownX = -1;
-            mInitialDownY = -1;
-        } else if (ev.getAction() == MotionEvent.ACTION_MOVE) {
-            if (Config.DEBUG) {
-                Log.i(TAG, "OITE: MOVE");
-            }
-
-            if (!isStillALongPress((int) ev.getX(), (int) ev.getY())) {
-                if (Config.DEBUG) {
-                    Log.i(TAG, "OITE: MOVED TOO MUCH, CANCELLING CheckForLongPress Runnable");
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isStillALongPress(int x, int y) {
-        return (((x - mInitialDownX) * (x - mInitialDownX))
-                + ((y - mInitialDownY) * (y - mInitialDownY))) <= TOUCH_SLOP_SQUARED;
+        return mCanPickRange || super.onInterceptTouchEvent(ev);
     }
 
     @Override
@@ -263,8 +225,6 @@ class DayPickerViewPager extends ViewPager {
                 }
             }
 
-            mInitialDownX = -1;
-            mInitialDownY = -1;
             mScrollingDirection = NOT_SCROLLING;
 
             if (mScrollerRunnable != null) {

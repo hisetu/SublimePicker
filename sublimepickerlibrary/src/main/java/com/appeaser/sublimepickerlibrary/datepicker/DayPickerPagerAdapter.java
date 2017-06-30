@@ -439,6 +439,8 @@ class DayPickerPagerAdapter extends PagerAdapter {
 
                 if (selectedDayEnd != null && (!updateIfNecessary
                         || mSelectedDay.getSecondDate().getTimeInMillis() != selectedDayEnd.getTimeInMillis())) {
+                    Calendar firstDate = (mTempSelectedDay.getStartDate().compareTo(mMinDate) < 0) ? mMinDate : mTempSelectedDay.getStartDate();
+                    mTempSelectedDay.setFirstDate(firstDate);
                     mTempSelectedDay.setSecondDate(selectedDayEnd);
                     return mTempSelectedDay;
                 }
