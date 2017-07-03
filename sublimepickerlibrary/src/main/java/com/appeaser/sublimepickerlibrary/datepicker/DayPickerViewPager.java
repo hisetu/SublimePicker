@@ -244,10 +244,9 @@ class DayPickerViewPager extends ViewPager {
                 if (isNeedUpdateStartDate)
                     mTempSelectedDate = mDayPickerPagerAdapter
                             .resolveStartDateForRange((int) ev.getX(), (int) ev.getY(), getCurrentItem());
-            }
-
-            if (mTempSelectedDate == null) {
-                return true;
+            } else {
+                mTempSelectedDate = mDayPickerPagerAdapter
+                        .resolveStartDateForRange((int) ev.getX(), (int) ev.getY(), getCurrentItem());
             }
 
             mScrollingDirection = NOT_SCROLLING;
