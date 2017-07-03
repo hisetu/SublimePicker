@@ -17,6 +17,7 @@
 package com.appeaser.sublimepicker;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -112,22 +113,30 @@ public class SublimePickerFragment extends DialogFragment {
             options = arguments.getParcelable("SUBLIME_OPTIONS");
         }
 
-        Calendar startDate = Calendar.getInstance();
-        startDate.add(Calendar.DAY_OF_MONTH, 2);
+        Calendar startDate = getCalendar(Calendar.DAY_OF_MONTH, 1);
+        Calendar endDate = getCalendar(Calendar.MONTH, 2);
 
-        Calendar endDate = Calendar.getInstance();
-        endDate.add(Calendar.MONTH, 2);
+        Calendar noSelectableDate = getCalendar(Calendar.DAY_OF_MONTH, 1);
+        options.addCanNotPickDate(noSelectableDate);
 
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.add(Calendar.MONTH, 1);
-        calendar2.add(Calendar.DAY_OF_MONTH, 3);
-        options.addCanNotPickDate(calendar2);
+        Calendar noSelectableDate2 = getCalendar(Calendar.DAY_OF_MONTH, 3);
+        options.addCanNotPickDate(noSelectableDate2);
+
+        Calendar noSelectableDate3 = getCalendar(Calendar.MONTH, 1);
+        noSelectableDate3.add(Calendar.DAY_OF_MONTH, 3);
+        options.addCanNotPickDate(noSelectableDate3);
 
         options.setDateRange(startDate.getTimeInMillis(), endDate.getTimeInMillis());
-        options.setDateParams(startDate);
 
         mSublimePicker.initializePicker(options, mListener);
         return mSublimePicker;
+    }
+
+    @NonNull
+    private Calendar getCalendar(int dayOfMonth, int value) {
+        Calendar startDate = Calendar.getInstance();
+        startDate.add(dayOfMonth, value);
+        return startDate;
     }
 
     // For communicating with the activity
