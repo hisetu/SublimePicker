@@ -283,7 +283,7 @@ public class SublimeOptions implements Parcelable {
             endCal.set(mEndYear, mEndMonth, mEndDayOfMonth);
         }
 
-        return new SelectedDate(startCal, endCal);
+        return null;
     }
 
     public long[] getDateRange() {

@@ -266,7 +266,7 @@ public class SublimeDatePicker extends FrameLayout {
         setFirstDayOfWeek(firstDayOfWeek);
         mDayPickerView.setMinDate(mMinDate.getTimeInMillis());
         mDayPickerView.setMaxDate(mMaxDate.getTimeInMillis());
-        mDayPickerView.setDate(mCurrentDate);
+        mDayPickerView.setDate(null);
         mDayPickerView.setProxyDaySelectionEventListener(mProxyDaySelectionEventListener);
 
         // Set up year picker view.
@@ -482,7 +482,7 @@ public class SublimeDatePicker extends FrameLayout {
     private void setCurrentView(int viewIndex) {
         switch (viewIndex) {
             case VIEW_MONTH_DAY:
-                mDayPickerView.setDate(mCurrentDate);
+                mDayPickerView.setDate(null);
 
                 if (mCurrentDate.getType() == SelectedDate.Type.SINGLE) {
                     switchToSingleDateView();
@@ -562,7 +562,7 @@ public class SublimeDatePicker extends FrameLayout {
 
         updateHeaderViews();
 
-        mDayPickerView.setDate(new SelectedDate(mCurrentDate), false, goToPosition);
+        mDayPickerView.setDate(null, false, goToPosition);
 
         if (mCurrentDate.getType() == SelectedDate.Type.SINGLE) {
             mYearPickerView.setYear(year);

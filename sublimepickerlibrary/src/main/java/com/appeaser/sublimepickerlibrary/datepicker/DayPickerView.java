@@ -403,7 +403,7 @@ class DayPickerView extends ViewGroup {
             mViewPager.setCurrentItem(position, animate);
         }
 
-        mAdapter.setSelectedDay(new SelectedDate(mSelectedDay));
+        mAdapter.setSelectedDay(mSelectedDay);
     }
 
     public SelectedDate getDate() {
