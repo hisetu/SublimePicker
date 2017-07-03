@@ -521,9 +521,13 @@ class DayPickerPagerAdapter extends PagerAdapter {
         }
     }
 
-    public interface DaySelectionEventListener {
-        void onDaySelected(DayPickerPagerAdapter view, Calendar day);
+    public List<Calendar> getCanNotPickDates() {
+        return mCanNotPickDates;
+    }
 
+    public interface DaySelectionEventListener {
+
+        void onDaySelected(DayPickerPagerAdapter view, Calendar day);
         void onDateRangeSelectionStarted(@NonNull SelectedDate selectedDate);
 
         void onDateRangeSelectionEnded(@Nullable SelectedDate selectedDate);

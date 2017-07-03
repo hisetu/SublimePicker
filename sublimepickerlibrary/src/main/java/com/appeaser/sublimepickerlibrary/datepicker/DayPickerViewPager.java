@@ -34,6 +34,8 @@ import com.appeaser.sublimepickerlibrary.utilities.SUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * This displays a list of months in a calendar format with selectable days.
@@ -236,10 +238,12 @@ class DayPickerViewPager extends ViewPager {
                 Log.i(TAG, "OTE: LONGPRESS && DOWN");
             }
 
-            if (mTempSelectedDate != null
-                    && mTempSelectedDate.getType() == SelectedDate.Type.RANGE) {
-                mTempSelectedDate = mDayPickerPagerAdapter
-                        .resolveStartDateForRange((int) ev.getX(), (int) ev.getY(), getCurrentItem());
+            if (mTempSelectedDate != null) {
+                boolean isNeedUpdateStartDate = mTempSelectedDate.getType() != SelectedDate.Type.SINGLE
+                        || isNextDayUnavailable(ev);
+                if (isNeedUpdateStartDate)
+                    mTempSelectedDate = mDayPickerPagerAdapter
+                            .resolveStartDateForRange((int) ev.getX(), (int) ev.getY(), getCurrentItem());
             }
 
             if (mTempSelectedDate == null) {
@@ -251,6 +255,23 @@ class DayPickerViewPager extends ViewPager {
         }
 
         return true;
+    }
+
+    private boolean isNextDayUnavailable(MotionEvent ev) {
+        List<Calendar> canNotPickDates = mDayPickerPagerAdapter.getCanNotPickDates();
+        if (canNotPickDates != null) {
+            Calendar startDate = mTempSelectedDate.getStartDate();
+            for (Calendar canNotPickDate : canNotPickDates) {
+                if (canNotPickDate.get(Calendar.YEAR) == startDate.get(Calendar.YEAR)
+                        && canNotPickDate.get(Calendar.MONTH) == startDate.get(Calendar.MONTH)
+                        && canNotPickDate.get(Calendar.DAY_OF_MONTH) == startDate.get(Calendar.DAY_OF_MONTH) + 1) {
+                    mTempSelectedDate = mDayPickerPagerAdapter
+                            .resolveStartDateForRange((int) ev.getX(), (int) ev.getY(), getCurrentItem());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private int resolveDirectionForScroll(float x) {

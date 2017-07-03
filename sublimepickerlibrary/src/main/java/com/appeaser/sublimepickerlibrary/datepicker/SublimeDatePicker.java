@@ -636,7 +636,7 @@ public class SublimeDatePicker extends FrameLayout {
             return;
         }
         if (mCurrentDate.getStartDate().before(mTempDate)) {
-            mCurrentDate.getStartDate().setTimeInMillis(minDate);
+            mCurrentDate.setDate(mTempDate);
             onDateChanged(false, true, true);
         }
         mMinDate.setTimeInMillis(minDate);
