@@ -496,6 +496,10 @@ class DayPickerView extends ViewGroup {
         onRangeChanged();
     }
 
+    public boolean isUnselected(){
+        return mViewPager.isUnselected();
+    }
+
     public interface ProxyDaySelectionEventListener {
         void onDaySelected(DayPickerView view, Calendar day);
 

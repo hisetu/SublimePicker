@@ -63,6 +63,7 @@ class DayPickerViewPager extends ViewPager {
     private static final int SCROLLING_RIGHT = 1;
     private ScrollerRunnable mScrollerRunnable;
     private int mScrollingDirection = NOT_SCROLLING;
+    private boolean isUnselected = true;
 
     public DayPickerViewPager(Context context) {
         this(context, null);
@@ -245,6 +246,7 @@ class DayPickerViewPager extends ViewPager {
                     mTempSelectedDate = mDayPickerPagerAdapter
                             .resolveStartDateForRange((int) ev.getX(), (int) ev.getY(), getCurrentItem());
             } else {
+                isUnselected = false;
                 mTempSelectedDate = mDayPickerPagerAdapter
                         .resolveStartDateForRange((int) ev.getX(), (int) ev.getY(), getCurrentItem());
             }
@@ -281,6 +283,10 @@ class DayPickerViewPager extends ViewPager {
         }
 
         return NOT_SCROLLING;
+    }
+
+    public boolean isUnselected() {
+        return isUnselected;
     }
 
     private class ScrollerRunnable implements Runnable {

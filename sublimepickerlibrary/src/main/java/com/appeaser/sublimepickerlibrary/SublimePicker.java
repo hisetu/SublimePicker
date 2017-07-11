@@ -567,7 +567,7 @@ public class SublimePicker extends FrameLayout
                 mDatePicker.setMaxDate(dateRange[1]);
             }
 
-            if(mOptions.getCanNotPickDates() != null
+            if (mOptions.getCanNotPickDates() != null
                     && !mOptions.getCanNotPickDates().isEmpty())
                 mDatePicker.setCanNotPickDates(mOptions.getCanNotPickDates());
 
@@ -627,6 +627,11 @@ public class SublimePicker extends FrameLayout
         mCurrentPicker = mOptions.getPickerToShow();
         // Updated from 'updateDisplay()' when 'RecurrencePicker' is chosen
         mHiddenPicker = SublimeOptions.Picker.INVALID;
+
+        if (!TextUtils.isEmpty(mOptions.getStartDateHint()))
+            mDatePicker.setStartDateHint(mOptions.getStartDateHint());
+        if (!TextUtils.isEmpty(mOptions.getEndDateHint()))
+            mDatePicker.setEndDateHint(mOptions.getEndDateHint());
     }
 
     private void reassessValidity() {
@@ -637,9 +642,9 @@ public class SublimePicker extends FrameLayout
     public void onDateChanged(SublimeDatePicker view, SelectedDate selectedDate) {
         // TODO: Consider removing this propagation of date change event altogether
         //mDatePicker.init(selectedDate.getStartDate().get(Calendar.YEAR),
-                //selectedDate.getStartDate().get(Calendar.MONTH),
-                //selectedDate.getStartDate().get(Calendar.DAY_OF_MONTH),
-                //mOptions.canPickDateRange(), this);
+        //selectedDate.getStartDate().get(Calendar.MONTH),
+        //selectedDate.getStartDate().get(Calendar.DAY_OF_MONTH),
+        //mOptions.canPickDateRange(), this);
         mDatePicker.init(selectedDate, mOptions.canPickDateRange(), this);
     }
 

@@ -51,8 +51,8 @@ public class SublimeOptions implements Parcelable {
 
     // Date & Time params
     private int mStartYear = -1, mStartMonth = -1, mStartDayOfMonth = -1,
-                mEndYear = -1, mEndMonth = -1, mEndDayOfMonth = -1,
-                mHourOfDay = -1, mMinute = -1;
+            mEndYear = -1, mEndMonth = -1, mEndDayOfMonth = -1,
+            mHourOfDay = -1, mMinute = -1;
     //private int mYear = -1, mMonthOfYear = -1, mDayOfMonth = -1, mHourOfDay = -1, mMinute = -1;
     private long mMinDate = Long.MIN_VALUE, mMaxDate = Long.MIN_VALUE;
     private boolean mAnimateLayoutChanges, mIs24HourView;
@@ -68,6 +68,8 @@ public class SublimeOptions implements Parcelable {
 
     // Defaults
     private Picker mPickerToShow = Picker.DATE_PICKER;
+
+    private String mStartDateHint, mEndDateHint;
 
     public SublimeOptions() {
         // Nothing
@@ -186,15 +188,15 @@ public class SublimeOptions implements Parcelable {
         return this;
     }
 
-    public SublimeOptions addCanNotPickDate(Calendar day){
-        if(mCanNotPickDates == null){
+    public SublimeOptions addCanNotPickDate(Calendar day) {
+        if (mCanNotPickDates == null) {
             mCanNotPickDates = new ArrayList<>();
         }
         mCanNotPickDates.add(day);
         return this;
     }
 
-    public List<Calendar> getCanNotPickDates(){
+    public List<Calendar> getCanNotPickDates() {
         return mCanNotPickDates;
     }
 
@@ -330,6 +332,11 @@ public class SublimeOptions implements Parcelable {
         return mCanPickDateRange;
     }
 
+    public void setHeaderHint(String startDateHint, String endDateHint) {
+        this.mStartDateHint = startDateHint;
+        this.mEndDateHint = endDateHint;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -352,7 +359,7 @@ public class SublimeOptions implements Parcelable {
         mCanPickDateRange = in.readByte() != 0;
 
         int canNotPickDateSize = in.readInt();
-        if(canNotPickDateSize > 0){
+        if (canNotPickDateSize > 0) {
             long[] longs = new long[canNotPickDateSize];
             in.readLongArray(longs);
             mCanNotPickDates = new ArrayList<>();
@@ -362,6 +369,8 @@ public class SublimeOptions implements Parcelable {
                 mCanNotPickDates.add(calendar);
             }
         }
+        mStartDateHint = in.readString();
+        mEndDateHint = in.readString();
     }
 
     @Override
@@ -382,13 +391,23 @@ public class SublimeOptions implements Parcelable {
         dest.writeByte((byte) (mCanPickDateRange ? 1 : 0));
 
         dest.writeInt(mCanNotPickDates.size());
-        if(mCanNotPickDates!=null && mCanNotPickDates.size() > 0){
+        if (mCanNotPickDates != null && mCanNotPickDates.size() > 0) {
             long[] longs = new long[mCanNotPickDates.size()];
             for (int i = 0; i < mCanNotPickDates.size(); i++) {
                 longs[i] = mCanNotPickDates.get(i).getTimeInMillis();
             }
             dest.writeLongArray(longs);
         }
+        dest.writeString(mStartDateHint);
+        dest.writeString(mEndDateHint);
+    }
+
+    public String getStartDateHint() {
+        return mStartDateHint;
+    }
+
+    public String getEndDateHint() {
+        return mEndDateHint;
     }
 
     public static final Parcelable.Creator<SublimeOptions> CREATOR = new Parcelable.Creator<SublimeOptions>() {

@@ -117,6 +117,8 @@ public class SublimeDatePicker extends FrameLayout {
     private int mCurrentlyActivatedRangeItem = RANGE_ACTIVATED_NONE;
 
     private boolean mIsInLandscapeMode;
+    private String mStartDateHint;
+    private String mEndDateHint;
 
     public SublimeDatePicker(Context context) {
         this(context, null);
@@ -129,13 +131,17 @@ public class SublimeDatePicker extends FrameLayout {
     public SublimeDatePicker(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initializeLayout(attrs, defStyleAttr, R.style.SublimeDatePickerStyle);
+        mStartDateHint = getContext().getString(R.string.start_date);
+        mEndDateHint = getContext().getString(R.string.end_date);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SublimeDatePicker(Context context, AttributeSet attrs,
-                                     int defStyleAttr, int defStyleRes) {
+                             int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initializeLayout(attrs, defStyleAttr, defStyleRes);
+        mStartDateHint = getContext().getString(R.string.start_date);
+        mEndDateHint = getContext().getString(R.string.end_date);
     }
 
     private void initializeLayout(AttributeSet attrs,
@@ -467,8 +473,8 @@ public class SublimeDatePicker extends FrameLayout {
                     0, dateStrEnd.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        tvHeaderDateStart.setText(spDateStart);
-        tvHeaderDateEnd.setText(spDateEnd);
+        tvHeaderDateStart.setText(mDayPickerView.isUnselected() ? mStartDateHint : spDateStart);
+        tvHeaderDateEnd.setText(spDateStart.toString().equals(spDateEnd.toString()) ? mEndDateHint : spDateEnd);
 
         // TODO: This should use live regions.
         if (announce) {
@@ -516,10 +522,10 @@ public class SublimeDatePicker extends FrameLayout {
      * Initialize the state. If the provided values designate an inconsistent
      * date the values are normalized before updating the spinners.
      *
-     * @param selectedDate  The initial date or date range.
-     * @param canPickRange  Enable/disable date range selection
-     * @param callback      How user is notified date is changed by
-     *                      user, can be null.
+     * @param selectedDate The initial date or date range.
+     * @param canPickRange Enable/disable date range selection
+     * @param callback     How user is notified date is changed by
+     *                     user, can be null.
      */
     //public void init(int year, int monthOfYear, int dayOfMonth, boolean canPickRange,
     public void init(SelectedDate selectedDate, boolean canPickRange,
@@ -591,14 +597,7 @@ public class SublimeDatePicker extends FrameLayout {
     }
 
     private void switchToSingleDateView() {
-        mCurrentlyActivatedRangeItem = RANGE_ACTIVATED_NONE;
-
-        ivHeaderDateReset.setVisibility(View.GONE);
-        llHeaderDateRangeCont.setVisibility(View.INVISIBLE);
-        llHeaderDateSingleCont.setVisibility(View.VISIBLE);
-
-        mHeaderMonthDay.setActivated(true);
-        mHeaderYear.setActivated(false);
+        switchToDateRangeView();
     }
 
     private void switchToDateRangeView() {
@@ -826,6 +825,16 @@ public class SublimeDatePicker extends FrameLayout {
     public void setCanNotPickDates(List<Calendar> canNotPickDates) {
         mDayPickerView.setCanNotPickDates(canNotPickDates);
         onDateChanged(false, false, false);
+    }
+
+    public void setStartDateHint(String startDateHint) {
+        this.mStartDateHint = startDateHint;
+        onCurrentDateChanged(false);
+    }
+
+    public void setEndDateHint(String endDateHint) {
+        this.mEndDateHint = endDateHint;
+        onCurrentDateChanged(false);
     }
 
     /**

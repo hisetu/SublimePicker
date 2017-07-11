@@ -128,6 +128,8 @@ public class SublimePickerFragment extends DialogFragment {
 
         options.setDateRange(startDate.getTimeInMillis(), endDate.getTimeInMillis());
 
+        options.setHeaderHint("start", "end");
+
         mSublimePicker.initializePicker(options, mListener);
         return mSublimePicker;
     }
