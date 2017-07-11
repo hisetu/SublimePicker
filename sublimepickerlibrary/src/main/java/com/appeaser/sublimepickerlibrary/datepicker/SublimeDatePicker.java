@@ -606,7 +606,6 @@ public class SublimeDatePicker extends FrameLayout {
         }
 
         llHeaderDateSingleCont.setVisibility(View.INVISIBLE);
-        ivHeaderDateReset.setVisibility(View.VISIBLE);
         llHeaderDateRangeCont.setVisibility(View.VISIBLE);
 
         tvHeaderDateStart.setActivated(mCurrentlyActivatedRangeItem == RANGE_ACTIVATED_START);
